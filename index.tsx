@@ -1,6 +1,7 @@
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, React } from "@webpack/common";
+import { findStoreLazy } from "@webpack";
+import { Button, FluxDispatcher, React } from "@webpack/common";
 
 // === PRESET LIST ===
 // Sounds are inlined into the bundle at build time via Vencord's fileUrlPlugin
@@ -8,7 +9,6 @@ import sClassic from "file://./sounds/discord-classic.mp3?base64";
 import sHalloween2020 from "file://./sounds/discord-halloween-2020.mp3?base64";
 import sChristmas2020 from "file://./sounds/discord-christmas-2020.mp3?base64";
 import sHalloween2022 from "file://./sounds/discord-halloween-2022.mp3?base64";
-import sHalloween2022Remix from "file://./sounds/discord-halloween-2022-remix.mp3?base64";
 import sHalloween2023 from "file://./sounds/discord-halloween-2023.mp3?base64";
 import sHalloween2024 from "file://./sounds/discord-halloween-2024.mp3?base64";
 import sHalloween2025 from "file://./sounds/discord-halloween-2025.mp3?base64";
@@ -24,7 +24,6 @@ const PRESET_SOUNDS = {
     "discord-halloween-2020": "Discord Halloween 2020",
     "discord-christmas-2020": "Discord Christmas 2020",
     "discord-halloween-2022": "Discord Halloween 2022",
-    "discord-halloween-2022-remix": "Discord Halloween 2022 — Remix",
     "discord-halloween-2023": "Discord Halloween 2023",
     "discord-halloween-2024": "Discord Halloween 2024",
     "discord-halloween-2025": "Discord Halloween 2025",
@@ -43,7 +42,6 @@ const SOUND_DATA: Record<Preset, string> = {
     "discord-halloween-2020": sHalloween2020,
     "discord-christmas-2020": sChristmas2020,
     "discord-halloween-2022": sHalloween2022,
-    "discord-halloween-2022-remix": sHalloween2022Remix,
     "discord-halloween-2023": sHalloween2023,
     "discord-halloween-2024": sHalloween2024,
     "discord-halloween-2025": sHalloween2025,
@@ -98,6 +96,34 @@ function playCustom(volume: number) {
 function stopCustom() {
     currentAudio?.pause();
     currentAudio = null;
+}
+
+const CallStore = findStoreLazy("CallStore");
+const UserStore = findStoreLazy("UserStore");
+
+let ringing = false;
+let watchTimer: ReturnType<typeof setInterval> | null = null;
+
+function isRingingNow(): boolean {
+    try {
+        const me = UserStore?.getCurrentUser?.()?.id;
+        const calls = CallStore?.getCalls?.() ?? [];
+        if (calls.some(c => c?.ringing?.includes?.(me))) return true;
+    } catch { }
+    try {
+        if (typeof CallStore?.isRinging === "function" && CallStore.isRinging()) return true;
+    } catch { }
+    return false;
+}
+
+function checkRinging() {
+    let now = false;
+    try { now = isRingingNow(); } catch { }
+
+    if (now && !ringing && settings.store.replaceIncoming && !previewMode)
+        playCustom(settings.store.volume / 100);
+    if (!now && ringing) stopCustom();
+    ringing = now;
 }
 
 const settings = definePluginSettings({
@@ -239,7 +265,7 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "CustomCall",
     description: "Custom ringtones for Discord calls: presets or your own file with trim, loop and volume. NOTE: if a seasonal event (Halloween, New Year) is currently replacing the call ringtone, disable the event sound pack in Settings -> Notifications.",
-    authors: [{ name: "missedvq", id: 1104693502039834654n }],
+    authors: [{ name: "missedvq", id: 0n }],
     tags: ["Voice", "Fun"],
     settings,
 
@@ -279,12 +305,11 @@ export default definePlugin({
         const isIncoming = name.startsWith("call_ringing");
         const isOutgoing = name.startsWith("call_calling");
 
-        if (this.isCallSound(name) &&
+        const replaced = this.isCallSound(name) &&
             ((isIncoming && settings.store.replaceIncoming) ||
-             (isOutgoing && settings.store.replaceOutgoing))) {
-            return currentSrc();
-        }
+             (isOutgoing && settings.store.replaceOutgoing));
 
+        if (replaced) return currentSrc();
         return req(`./${name}.mp3`);
     },
 
@@ -314,7 +339,18 @@ export default definePlugin({
         });
     },
 
+    start() {
+        checkRinging();
+        watchTimer = setInterval(checkRinging, 1000);
+        for (const evt of ["CALL_CREATE", "CALL_UPDATE", "CALL_DELETE", "CALL_RING"])
+            FluxDispatcher.subscribe(evt, checkRinging);
+    },
+
     stop() {
+        if (watchTimer) clearInterval(watchTimer);
+        watchTimer = null;
+        for (const evt of ["CALL_CREATE", "CALL_UPDATE", "CALL_DELETE", "CALL_RING"])
+            FluxDispatcher.unsubscribe(evt, checkRinging);
         stopCustom();
     },
 });
