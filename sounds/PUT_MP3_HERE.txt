@@ -1,1 +1,0 @@
-Put mp3 files here named exactly as in PRESET_SOUNDS (index.tsx)
