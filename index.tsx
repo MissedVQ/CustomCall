@@ -239,7 +239,7 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "CustomCall",
     description: "Custom ringtones for Discord calls: presets or your own file with trim, loop and volume. NOTE: if a seasonal event (Halloween, New Year) is currently replacing the call ringtone, disable the event sound pack in Settings -> Notifications.",
-    authors: [{ name: "missedvq", id: 0n }],
+    authors: [{ name: "missedvq", id: 1104693502039834654 }],
     tags: ["Voice", "Fun"],
     settings,
 
