@@ -8,7 +8,7 @@ with trim, loop and volume control.
 ## Features / Возможности
 
 **EN:**
-- 14 presets (Discord's yearly sounds: Halloween / Christmas / Secret);
+- 13 presets (Discord's yearly sounds: Halloween / Christmas / Secret);
 - upload your own music file right in the client settings;
 - trim the file (start/end in seconds);
 - loop on/off;
@@ -17,7 +17,7 @@ with trim, loop and volume control.
 - replace incoming and/or outgoing call ringtone.
 
 **RU:**
-- 14 пресетов (годовые звуки Discord: Хэллоуин / Рождество / Secret);
+- 13 пресетов (годовые звуки Discord: Хэллоуин / Рождество / Secret);
 - загрузка своего музыкального файла прямо в настройках клиента;
 - обрезка файла (начало/конец в секундах);
 - зацикливание вкл/выкл;
