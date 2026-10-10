@@ -62,3 +62,35 @@ discord-christmas-2024, discord-christmas-2025, discord-secret
 (`file://./sounds/*.mp3?base64` imports), so no separate asset files are needed at runtime.
 **RU:** Пресетные звуки встраиваются в бандл при сборке через `fileUrlPlugin` Vencord
 (импорты `file://./sounds/*.mp3?base64`), отдельные файлы на диске в рантайме не нужны.
+
+## Quick install (script) / Быстрая установка
+
+**EN:** Run the included script — it installs everything automatically:
+- **Windows:** double-click `install.bat`
+- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
+
+Requirements: [Node.js](https://nodejs.org) (LTS) and git.
+The script clones Vencord to `~/Vencord`, copies the plugin, builds and injects.
+
+**RU:** Запустите included-скрипт — он установит всё автоматически:
+- **Windows:** двойной клик по `install.bat`
+- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
+
+Требования: [Node.js](https://nodejs.org) (LTS) и git.
+Скрипт клонирует Vencord в `~/Vencord`, скопирует плагин, соберёт и инжектнёт.
+
+## Troubleshooting / Известные проблемы
+
+**EN:**
+- No ring on calls at all → check that Discord notifications are enabled (Settings → Notifications).
+- During seasonal events (Halloween/New Year) disable the event sound pack in Settings → Notifications.
+- `pnpm is not recognized` → run `corepack enable` (on Windows as administrator), or reinstall Node.js.
+- Plugin not in the list → make sure you fully restarted Discord (close it from the system tray).
+- Clearing Discord cache deletes your custom uploaded sounds.
+
+**RU:**
+- Звонок вообще без звука → проверьте, что уведомления Discord включены (Настройки → Уведомления).
+- Во время ивентов (Хэллоуин/Новый год) отключите звуковой набор ивента в Настройки → Уведомления.
+- `pnpm is not recognized` → выполните `corepack enable` (в Windows от администратора) или переустановите Node.js.
+- Плагина нет в списке → полностью перезапустите Discord (закройте из трея).
+- Очистка кэша Discord удалит ваши загруженные кастомные звуки.
