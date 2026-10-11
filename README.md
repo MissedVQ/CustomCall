@@ -1,96 +1,91 @@
 # CustomCall — Vencord Plugin / Плагин для Vencord
 
-**EN:** Custom ringtones for Discord calls: presets or your own music file
-with trim, loop and volume control.
-**RU:** Кастомные рингтоны для звонков Discord: пресеты или свой музыкальный файл
-с обрезкой, зацикливанием и регулировкой громкости.
+**EN:** Custom ringtones for Discord calls: 21 presets or your own file/URL, with separate settings for incoming and outgoing calls.
+**RU:** Кастомные рингтоны для звонков Discord: 21 пресет или свой файл/URL, с отдельными настройками для входящих и исходящих звонков.
 
 ## Features / Возможности
 
 **EN:**
-- 13 presets (Discord's yearly sounds: Halloween / Christmas / Secret);
-- upload your own music file right in the client settings;
-- trim the file (start/end in seconds);
-- loop on/off;
-- volume (adjustable live, even during a call);
-- preview button — test the sound without a call;
-- replace incoming and/or outgoing call ringtone.
+- **21 presets** in 5 categories: Classic (5), Halloween (7), Christmas (4), Remixes (4), Songs (1)
+- separate settings for **incoming** and **outgoing** calls: preset, custom file, song URL, volume, loop, trim, preview
+- optional **"Use custom sound"** toggle per direction — or just use a preset
+- **Song URL** support — stream any direct mp3 link
+- volume adjustable live, even during a call
+- replace incoming, outgoing, or both
+- preview stops automatically when leaving settings, switching sounds or on a real call
 
 **RU:**
-- 13 пресетов (годовые звуки Discord: Хэллоуин / Рождество / Secret);
-- загрузка своего музыкального файла прямо в настройках клиента;
-- обрезка файла (начало/конец в секундах);
-- зацикливание вкл/выкл;
-- громкость (меняется на лету, даже во время звонка);
-- кнопка превью — проверка звука без звонка;
-- замена входящего и/или исходящего рингтона.
+- **21 пресет** в 5 категориях: Classic (5), Halloween (7), Christmas (4), Remixes (4), Songs (1)
+- отдельные настройки для **входящего** и **исходящего** звонка: пресет, свой файл, URL песни, громкость, цикл, обрезка, превью
+- тумблер **«Включить кастомную музыку»** для каждого направления — или просто пресет
+- поддержка **URL песни** — прямое прямое mp3 стримится напрямую
+- громкость меняется на лету, даже во время звонка
+- замена входящего, исходящего или обоих сразу
+- превью останавливается само при выходе из настроек, смене звука или при реальном звонке
 
 ## Installation / Установка
 
 **EN:**
 1. Copy the `CustomCall` folder into `src/userplugins/` of your Vencord install.
-2. Put mp3 files into `CustomCall/sounds/` with names matching the presets exactly.
-3. Run `pnpm build` and restart Discord.
-4. Settings → Vencord → Plugins → CustomCall → gear icon.
+2. Run `pnpm build` and restart Discord (fully — close from tray).
+3. Settings → Vencord → Plugins → CustomCall → gear icon.
 
 **RU:**
 1. Скопируйте папку `CustomCall` в `src/userplugins/` вашей сборки Vencord.
-2. Положите mp3-файлы в `CustomCall/sounds/` строго под именами пресетов.
-3. Выполните `pnpm build` и перезапустите Discord.
-4. Настройки → Vencord → Plugins → CustomCall → шестерёнка.
+2. Выполните `pnpm build` и перезапустите Discord (полностью, из трея).
+3. Настройки → Vencord → Plugins → CustomCall → шестерёнка.
 
-## Sound names / Имена звуков
+### Quick install (script) / Быстрая установка
 
-discord-classic, discord-halloween-2020, discord-christmas-2020, discord-halloween-2022,
-discord-halloween-2022-remix, discord-halloween-2023, discord-halloween-2024,
-discord-halloween-2025, discord-halloween-2024-remix, discord-halloween-2026, discord-christmas-2022,
-discord-christmas-2024, discord-christmas-2025, discord-secret
+**EN:** Run the included script — it clones Vencord, copies the plugin, builds and injects automatically:
+- **Windows:** right-click `install.bat` → **Run as administrator**
+- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
+
+**RU:** Запустите скрипт из архива — он склонирует Vencord, скопирует плагин, соберёт и инжектнёт:
+- **Windows:** правый клик по `install.bat` → **Запуск от имени администратора**
+- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
+
+## Presets / Пресеты
+
+**Classic:** Classic, Classic — Remix, Discord 8-bit, Classic — Speed Up, Discord Secret
+**Halloween:** 2020, 2022, 2023, 2024, 2024 — Remix, 2025, 2026
+**Christmas:** 2020, 2022(3), 2024, 2025
+**Remixes:** Discord Anime, Discord Chill, Discord Night, Discord Natural
+**Songs:** Discordix — Erix
 
 ## Notes / Примечания
 
 **EN:**
-- Your custom sound is stored as a data URL in the settings (don't clear Discord cache if you want to keep it).
-- Presets are loaded lazily.
+- Your custom file / settings persist in Vencord settings; clearing Discord cache deletes uploaded files.
+- If a seasonal event (Halloween, New Year) is replacing the call sound, disable the event sound pack in **Settings → Notifications**.
 - License: GPL-3.0-or-later (inherited from Vencord).
 
 **RU:**
-- Свой звук хранится как data URL в настройках (не очищайте кэш Discord, если хотите его сохранить).
-- Пресеты подгружаются лениво.
+- Свой файл и настройки хранятся в настройках Vencord; очистка кэша Discord удалит загруженные файлы.
+- Если ивент (Хэллоуин, Новый год) заменяет звук звонка — отключите звуковой набор ивента в **Настройки → Уведомления**.
 - Лицензия: GPL-3.0-or-later (наследуется от Vencord).
 
-**EN:** Preset sounds are inlined into the bundle at build time via Vencord's `fileUrlPlugin`
-(`file://./sounds/*.mp3?base64` imports), so no separate asset files are needed at runtime.
-**RU:** Пресетные звуки встраиваются в бандл при сборке через `fileUrlPlugin` Vencord
-(импорты `file://./sounds/*.mp3?base64`), отдельные файлы на диске в рантайме не нужны.
+## Updating / Обновление
 
-## Quick install (script) / Быстрая установка
-
-**EN:** Run the included script — it installs everything automatically:
-- **Windows:** double-click `install.bat`
-- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
-
-Requirements: [Node.js](https://nodejs.org) (LTS) and git.
-The script clones Vencord to `~/Vencord`, copies the plugin, builds and injects.
-
-**RU:** Запустите included-скрипт — он установит всё автоматически:
-- **Windows:** двойной клик по `install.bat`
-- **Linux / macOS:** `chmod +x install.sh && ./install.sh`
-
-Требования: [Node.js](https://nodejs.org) (LTS) и git.
-Скрипт клонирует Vencord в `~/Vencord`, скопирует плагин, соберёт и инжектнёт.
+**EN:** Download the latest release and run `install.bat` again — your settings are kept.
+**RU:** Скачайте свежий релиз и запустите `install.bat` заново — настройки сохранятся.
 
 ## Troubleshooting / Известные проблемы
 
 **EN:**
-- No ring on calls at all → check that Discord notifications are enabled (Settings → Notifications).
-- During seasonal events (Halloween/New Year) disable the event sound pack in Settings → Notifications.
-- `pnpm is not recognized` → run `corepack enable` (on Windows as administrator), or reinstall Node.js.
-- Plugin not in the list → make sure you fully restarted Discord (close it from the system tray).
-- Clearing Discord cache deletes your custom uploaded sounds.
+- Build error `Could not resolve "./sounds/..."` — make sure all mp3 files are in the `sounds/` folder with exact names.
+- `pnpm is not recognized` — run `corepack enable` (Windows: as administrator).
+- Plugin not in the list — fully restart Discord (close from system tray).
+- No ring at all — check that Discord notifications are enabled (Settings → Notifications).
 
 **RU:**
-- Звонок вообще без звука → проверьте, что уведомления Discord включены (Настройки → Уведомления).
-- Во время ивентов (Хэллоуин/Новый год) отключите звуковой набор ивента в Настройки → Уведомления.
-- `pnpm is not recognized` → выполните `corepack enable` (в Windows от администратора) или переустановите Node.js.
-- Плагина нет в списке → полностью перезапустите Discord (закройте из трея).
-- Очистка кэша Discord удалит ваши загруженные кастомные звуки.
+- Ошибка сборки `Could not resolve "./sounds/..."` — убедитесь, что все mp3 лежат в папке `sounds/` с точными именами.
+- `pnpm is not recognized` — выполните `corepack enable` (в Windows от администратора).
+- Плагина нет в списке — полностью перезапустите Discord (закройте из трея).
+- Звонок вообще без звука — проверьте, что уведомления Discord включены (Настройки → Уведомления).
+
+## Author / Автор
+
+Telegram: **@MissedVQExtera**
+
+Discord: **@MissedVQCord**
