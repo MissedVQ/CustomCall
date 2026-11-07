@@ -77,15 +77,19 @@
 - `pnpm is not recognized` — run `corepack enable` (Windows: as administrator).
 - Plugin not in the list — fully restart Discord (close from system tray).
 - No ring at all — check that Discord notifications are enabled (Settings → Notifications).
+- **`Inject failed` / `fetch failed` / `ETIMEDOUT`** — The build was **successful**, but the script cannot download the installer because GitHub is blocked by your ISP. **Solution 1:** Download `VencordInstallerCli.exe` **manually** (`https://github.com/Vencord/Installer/releases/latest/download/VencordInstallerCli.exe`) and place it in the **root of your Vencord source folder** (e.g., `C:\Users\<YourUser>\Vencord`), then run `pnpm inject` again. **Solution 2 (Ultimate Fallback):** If the script still tries to download and fails, bypass the installer entirely. Your plugin is already built! Open `C:\Users\<YourUser>\Vencord\dist\`, select all files and copy them. Then press **Win + R**, type `%AppData%\Vencord` (or `%LocalAppData%\Vencord`) and press Enter. Paste the files there with replacement. Fully restart Discord.
+- **⚠️ DO NOT double-click `VencordInstallerCli.exe` directly!** If you do, it will download and install the **official** Vencord, erasing your custom build (and the plugin). Use the methods described above.
 
 **RU:**
 - Ошибка сборки `Could not resolve "./sounds/..."` — убедитесь, что все mp3 лежат в папке `sounds/` с точными именами.
 - `pnpm is not recognized` — выполните `corepack enable` (в Windows от администратора).
 - Плагина нет в списке — полностью перезапустите Discord (закройте из трея).
 - Звонок вообще без звука — проверьте, что уведомления Discord включены (Настройки → Уведомления).
+- **Ошибка `Inject failed` / `fetch failed` / `ETIMEDOUT`** — Сборка **прошла успешно**, но скрипт не может скачать установщик, так как GitHub заблокирован вашим провайдером. **Решение 1:** Скачайте `VencordInstallerCli.exe` **вручную** (`https://github.com/Vencord/Installer/releases/latest/download/VencordInstallerCli.exe`) и положите в **корень папки с исходниками Vencord** (например, `C:\Users\<ВашеИмя>\Vencord`), затем запустите `pnpm inject`. **Решение 2 (Крайний случай):** Если скрипт всё равно лезет в интернет и падает, обойдите установщик. Плагин уже собран! Откройте папку `C:\Users\<ВашеИмя>\Vencord\dist\`, выделите все файлы и скопируйте их. Затем нажмите **Win + R**, введите `%AppData%\Vencord` (или `%LocalAppData%\Vencord`) и нажмите Enter. Вставьте туда файлы с заменой. Полностью перезапустите Discord.
+- **⚠️ НЕ запускайте `VencordInstallerCli.exe` двойным кликом!** Если вы сделаете это, программа скачает и установит **официальный** Vencord, стерев вашу кастомную сборку (и плагин). Используйте методы, описанные выше.
 
 ## Author / Автор
 
 Telegram: **@MissedVQExtera**
 
-Discord: **@MissedVQCord**
+Discord: **@MissedVQCord** and **@MissedVQ**
