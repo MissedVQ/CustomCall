@@ -1,10 +1,8 @@
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, React } from "@webpack/common";
+import { React } from "@webpack/common";
 
 // === PRESET LIST ===
-// Sounds are inlined into the bundle at build time via Vencord's fileUrlPlugin
-// File names must be lowercase with hyphens (case matters on Linux builds)
 import sClassic from "file://./sounds/discord-classic.mp3?base64";
 import sClassicSpeedup from "file://./sounds/discord-classic-speedup.mp3?base64";
 import sSecret from "file://./sounds/discord-secret.mp3?base64";
@@ -95,7 +93,7 @@ function getPresetUrl(id: string): string {
     return `data:audio/mpeg;base64,${SOUND_DATA[id]}`;
 }
 
-// === UI STYLES (lazy inject — head may not exist at module load) ===
+// === UI STYLES ===
 let ccStylesInjected = false;
 function ensureCcStyles() {
     if (ccStylesInjected) return;
@@ -145,7 +143,6 @@ function dirKey(dir: "in" | "out", key: string): any {
 
 function playDir(dir: "in" | "out", volume: number) {
     stopCustom();
-
     const trimStart = Math.max(0, Number(dirKey(dir, "trimStart")) || 0);
     let trimEnd = Number(dirKey(dir, "trimEnd")) || 0;
     const loop = dirKey(dir, "loop") !== false;
@@ -182,7 +179,6 @@ function stopCustom() {
 }
 
 // === SETTINGS ===
-// hidden keys (stored but not rendered)
 const hidden = (defaultValue: any) => ({
     type: OptionType.COMPONENT,
     description: "hidden",
@@ -190,7 +186,6 @@ const hidden = (defaultValue: any) => ({
     component: () => null,
 });
 
-// custom toggle row (Vencord draws BOOLEAN titles from the raw key, so we build our own)
 function Toggle({ label, sub, value, onChange }: {
     label: string;
     sub: string;
@@ -201,16 +196,9 @@ function Toggle({ label, sub, value, onChange }: {
         <div
             onClick={() => onChange(!value)}
             style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 12,
-                padding: "13px 14px",
-                background: "var(--background-secondary-alt, #1e1f22)",
-                borderRadius: 8,
-                cursor: "pointer",
-                marginBottom: 10,
-                userSelect: "none",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                gap: 12, padding: "13px 14px", background: "var(--background-secondary-alt, #1e1f22)",
+                borderRadius: 8, cursor: "pointer", marginBottom: 10, userSelect: "none",
             }}
         >
             <div>
@@ -224,8 +212,7 @@ function Toggle({ label, sub, value, onChange }: {
             }}>
                 <div style={{
                     position: "absolute", top: 2, left: value ? 22 : 2,
-                    width: 20, height: 20, borderRadius: "50%",
-                    background: "#fff", transition: "left .15s",
+                    width: 20, height: 20, borderRadius: "50%", background: "#fff", transition: "left .15s",
                 }} />
             </div>
         </div>
@@ -248,7 +235,6 @@ function ToggleSection({ storageKey, label, sub }: {
     );
 }
 
-// custom dropdown in Discord style (in-flow accordion — no overlays)
 function Dropdown({ value, options, onChange }: {
     value: string;
     options: { value: string; label: string }[];
@@ -266,14 +252,8 @@ function Dropdown({ value, options, onChange }: {
                     background: "var(--input-background, #1e1f22)",
                     border: "1px solid var(--input-border, #1e1f22)",
                     color: "var(--text-normal, #dbdee1)",
-                    borderRadius: 6,
-                    padding: "11px 12px",
-                    fontSize: 15,
-                    cursor: "pointer",
-                    userSelect: "none",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    borderRadius: 6, padding: "11px 12px", fontSize: 15, cursor: "pointer",
+                    userSelect: "none", display: "flex", justifyContent: "space-between", alignItems: "center",
                 }}
             >
                 <span>{current?.label ?? "—"}</span>
@@ -281,10 +261,8 @@ function Dropdown({ value, options, onChange }: {
             </div>
             {open && (
                 <div style={{
-                    marginTop: 4,
-                    background: "var(--background-secondary, #2b2d31)",
-                    borderRadius: 6,
-                    border: "1px solid var(--background-modifier-active, #4e5058)",
+                    marginTop: 4, background: "var(--background-secondary, #2b2d31)",
+                    borderRadius: 6, border: "1px solid var(--background-modifier-active, #4e5058)",
                 }}>
                     {options.map(o => (
                         <div
@@ -314,7 +292,7 @@ function makeSection(dir: "in" | "out", title: string) {
             previewListeners.add(l);
             return () => {
                 previewListeners.delete(l);
-                if (previewDir === dir) stopCustom(); // выход из настроек — стоп превью
+                if (previewDir === dir) stopCustom();
             };
         }, []);
 
@@ -322,7 +300,6 @@ function makeSection(dir: "in" | "out", title: string) {
         const set = (k: string, v: any) => {
             if (dir === "in") (st as any)[`in_${k}`] = v;
             else (st as any)[`out_${k}`] = v;
-            // если меняем источник звука во время превью — перезапускаем его с новым звуком
             if ((k === "preset" || k === "custom" || k === "url") && previewDir === dir)
                 playDir(dir, get("volume") / 100);
         };
@@ -340,35 +317,22 @@ function makeSection(dir: "in" | "out", title: string) {
         );
 
         const inputStyle: React.CSSProperties = {
-            width: "100%",
-            background: "var(--input-background, #1e1f22)",
-            border: "1px solid var(--input-border, #1e1f22)",
-            color: "var(--text-normal, #dbdee1)",
-            borderRadius: 6,
-            padding: "11px 12px",
-            fontSize: 15,
-            outline: "none",
-            boxSizing: "border-box",
+            width: "100%", background: "var(--input-background, #1e1f22)",
+            border: "1px solid var(--input-border, #1e1f22)", color: "var(--text-normal, #dbdee1)",
+            borderRadius: 6, padding: "11px 12px", fontSize: 15, outline: "none", boxSizing: "border-box",
         };
 
         return (
             <div style={{
-                borderRadius: 8,
-                background: open ? "var(--background-secondary, #2b2d31)" : "transparent",
-                padding: open ? 14 : 0,
-                marginBottom: 10,
+                borderRadius: 8, background: open ? "var(--background-secondary, #2b2d31)" : "transparent",
+                padding: open ? 14 : 0, marginBottom: 10,
             }}>
                 <div
                     onClick={() => setOpen(!open)}
                     style={{
-                        cursor: "pointer",
-                        padding: "13px 14px",
-                        borderRadius: 8,
-                        background: "var(--background-secondary-alt, #1e1f22)",
-                        color: "var(--text-normal, #dbdee1)",
-                        fontWeight: 600,
-                        fontSize: 16,
-                        userSelect: "none",
+                        cursor: "pointer", padding: "13px 14px", borderRadius: 8,
+                        background: "var(--background-secondary-alt, #1e1f22)", color: "var(--text-normal, #dbdee1)",
+                        fontWeight: 600, fontSize: 16, userSelect: "none",
                     }}
                 >
                     {open ? "▼" : "▶"} {title}
@@ -389,11 +353,7 @@ function makeSection(dir: "in" | "out", title: string) {
                         ))}
 
                         {row("Звук / Sound", (
-                            <Dropdown
-                                value={get("preset")}
-                                options={presetOptions}
-                                onChange={v => set("preset", v)}
-                            />
+                            <Dropdown value={get("preset")} options={presetOptions} onChange={v => set("preset", v)} />
                         ))}
 
                         <Toggle
@@ -409,9 +369,7 @@ function makeSection(dir: "in" | "out", title: string) {
                         {row("Свой файл / Custom file", (
                             <div>
                                 <input
-                                    type="file"
-                                    accept="audio/*"
-                                    style={{ fontSize: 14, color: "var(--text-normal)" }}
+                                    type="file" accept="audio/*" style={{ fontSize: 14, color: "var(--text-normal)" }}
                                     onChange={e => {
                                         const file = e.target.files?.[0];
                                         if (!file) return;
@@ -433,34 +391,24 @@ function makeSection(dir: "in" | "out", title: string) {
 
                         {row("Ссылка на песню / Song URL (приоритет над файлом)", (
                             <input
-                                type="text"
-                                style={inputStyle}
-                                placeholder="https://example.com/song.mp3"
-                                value={get("url") || ""}
-                                onChange={e => set("url", e.target.value)}
+                                type="text" style={inputStyle} placeholder="https://example.com/song.mp3"
+                                value={get("url") || ""} onChange={e => set("url", e.target.value)}
                             />
                         ))}
 
                         {row(`Громкость / Volume: ${get("volume")}%`, (
                             <input
-                                type="range"
-                                className="cc-range"
-                                min={0}
-                                max={100}
-                                value={get("volume")}
+                                type="range" className="cc-range" min={0} max={100} value={get("volume")}
                                 onChange={e => {
                                     set("volume", Number(e.target.value));
-                                    if (currentAudio && currentDir === dir)
-                                        currentAudio.volume = Number(e.target.value) / 100;
+                                    if (currentAudio && currentDir === dir) currentAudio.volume = Number(e.target.value) / 100;
                                 }}
                             />
                         ))}
 
                         <label style={{ color: "var(--text-normal)", fontSize: 15, display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
                             <input
-                                type="checkbox"
-                                style={{ width: 18, height: 18 }}
-                                checked={get("loop") !== false}
+                                type="checkbox" style={{ width: 18, height: 18 }} checked={get("loop") !== false}
                                 onChange={e => set("loop", e.target.checked)}
                             />
                             Зацикливать / Loop
@@ -469,34 +417,31 @@ function makeSection(dir: "in" | "out", title: string) {
                         {row("Обрезка, сек / Trim, sec (0 = без обрезки)", (
                             <div style={{ display: "flex", gap: 10 }}>
                                 <input
-                                    type="number"
-                                    min={0}
-                                    style={{ ...inputStyle, width: "50%" }}
-                                    placeholder="Начало / Start"
-                                    value={get("trimStart") || 0}
-                                    onChange={e => set("trimStart", Number(e.target.value))}
+                                    type="number" min={0} style={{ ...inputStyle, width: "50%" }} placeholder="Начало / Start"
+                                    value={get("trimStart") || 0} onChange={e => set("trimStart", Number(e.target.value))}
                                 />
                                 <input
-                                    type="number"
-                                    min={0}
-                                    style={{ ...inputStyle, width: "50%" }}
-                                    placeholder="Конец / End"
-                                    value={get("trimEnd") || 0}
-                                    onChange={e => set("trimEnd", Number(e.target.value))}
+                                    type="number" min={0} style={{ ...inputStyle, width: "50%" }} placeholder="Конец / End"
+                                    value={get("trimEnd") || 0} onChange={e => set("trimEnd", Number(e.target.value))}
                                 />
                             </div>
                         ))}
 
                         <div>
-                            <Button
-                                size={Button.Sizes.LARGE}
+                            <button
                                 onClick={() => {
                                     if (playing) stopCustom();
                                     else playDir(dir, get("volume") / 100);
                                 }}
+                                style={{
+                                    backgroundColor: playing ? "var(--status-danger, #da373c)" : "var(--brand-experiment, #5865f2)",
+                                    color: "white", border: "none", borderRadius: "4px",
+                                    padding: "8px 20px", fontSize: "14px", fontWeight: 600,
+                                    cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center"
+                                }}
                             >
                                 {playing ? "■ Stop / Остановить" : "▶ Preview / Прослушать"}
-                            </Button>
+                            </button>
                         </div>
                     </div>
                 )}
@@ -510,13 +455,9 @@ const settings = definePluginSettings({
         type: OptionType.COMPONENT,
         component: () => (
             <div style={{
-                padding: "12px 16px",
-                marginBottom: "16px",
-                borderRadius: "8px",
-                backgroundColor: "var(--background-secondary-alt, #1e1f22)",
-                color: "var(--text-normal, #dbdee1)",
-                fontSize: "14px",
-                lineHeight: "1.4"
+                padding: "12px 16px", marginBottom: "16px", borderRadius: "8px",
+                backgroundColor: "var(--background-secondary-alt, #1e1f22)", color: "var(--text-normal, #dbdee1)",
+                fontSize: "14px", lineHeight: "1.4"
             }}>
                 <b>EN:</b> If a seasonal event (Halloween, New Year) is currently replacing the call sound,
                 go to <b>Settings → Notifications</b> and disable the event sound pack.
@@ -555,7 +496,6 @@ const settings = definePluginSettings({
         component: makeSection("out", "Исходящий звонок"),
     },
 
-    // hidden stored keys
     inReplace: hidden(true),
     outReplace: hidden(false),
     in_customEnabled: hidden(false),
@@ -589,22 +529,18 @@ export default definePlugin({
 
     patches: [
         {
-            // Discord's new sound engine: AudioPlayer class
             find: "could not play audio:",
             group: true,
             replacement: [
                 {
-                    // Replace the audio source for call sounds
                     match: /(\i\.src=)(\i\(\d+\))\(`\.\/\$\{this\.name\}\.mp3`\)/,
                     replace: "$1$self.resolveSrc(this,$2)",
                 },
                 {
-                    // Apply loop/trim settings to the Audio element
                     match: /(new Audio;)(\i)(\.src=)/,
                     replace: "$1$self.applyLoopAndTrim(this,$2);$2$3",
                 },
                 {
-                    // Scale volume with our volume slider (call sounds only)
                     match: /Math\.min\((\i\.\i\.getOutputVolume\(\))\/100\*this\._volume,1\)/,
                     replace: "Math.min($1/100*this._volume*$self.volumeScale(this),1)",
                 },
@@ -625,12 +561,10 @@ export default definePlugin({
         if (typeof name !== "string") return req("./undefined.mp3");
 
         const dir = this.dirOf(name);
-        const replace = Boolean(dir === "in"
-            ? (settings.store as any).inReplace
-            : (settings.store as any).outReplace);
+        const replace = Boolean(dir === "in" ? (settings.store as any).inReplace : (settings.store as any).outReplace);
 
         if (this.isCallSound(name) && replace) {
-            stopCustom(); // реальный звонок — глушим превью
+            stopCustom();
             return dirSrc(dir);
         }
         return req(`./${name}.mp3`);
