@@ -1,0 +1,60 @@
+name: Build and Release Plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Plugin Repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Clone Vencord Source
+        run: git clone --depth 1 https://github.com/Vencord/Vencord.git vencord-src
+
+      - name: Copy CustomCall to userplugins
+        run: |
+          mkdir -p vencord-src/src/userplugins/CustomCall
+         
+          rsync -av --exclude='.git' --exclude='.github' --exclude='vencord-src' ./ vencord-src/src/userplugins/CustomCall/
+
+      - name: Install dependencies
+        run: |
+          cd vencord-src
+          pnpm install --frozen-lockfile
+
+      - name: Build Vencord
+        run: |
+          cd vencord-src
+          pnpm build
+
+      - name: Create ZIP archive
+        run: |
+          cd vencord-src/dist
+          
+          zip -r ../../CustomCall-Build.zip .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: CustomCall-Build.zip
+          generate_release_notes: true
+          draft: false
